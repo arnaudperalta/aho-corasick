@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 	}
 
 	FILE *words_file = fopen(argv[1], "r");
-	FILE *text_file = fopen(argv[1], "r");
+	FILE *text_file = fopen(argv[2], "r");
 
 	if (words_file == NULL || text_file == NULL) {
 		fprintf(stderr, "Invalid files.");
