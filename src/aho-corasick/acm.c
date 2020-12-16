@@ -1,64 +1,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <time.h>
 #include <string.h>
 #include "../utils.h"
 #include "acm.h"
 
-#define ARG_COUNT      3
-
 // On défini la matrice de transitions comme un tableau de pointeur.
 // Chacun de ces tableau représente un état et chaque colonne une lettre.
 struct m_tran {
-	int **matrix; // matrice de transition
-	int *suppl;   // tableau des suppléants
-	int *end;    // tableau des états finaux
-	int nextNode; // Indice du prochain état a créé
-	size_t maxNode;
+	int **matrix;   // matrice de transition
+	int *suppl;     // tableau des suppléants
+	int *end;       // tableau des états finaux
+	int nextNode;   // Indice du prochain état à créé
+	size_t maxNode; // Nombre maximal du nombre d'états
 };
-
-// Strcuture de file utilisé pour le calcul des suppléants
-typedef struct queue {
-	int *array;
-	int size;
-	int count;
-	int front;
-	int back;
-} queue;
-
-queue *queue_create(size_t maxNode) {
-	queue *ptr = malloc(sizeof *ptr);
-	if (ptr == NULL)
-		return NULL;
-	ptr->array = malloc(sizeof (int) * maxNode);
-	if (ptr->array == NULL)
-		return NULL;
-	ptr->size = (int) maxNode;
-	ptr->count = 0;
-	ptr->front = 0;
-	ptr->back = -1;
-	return ptr;
-}
-
-void queue_push(queue *ptr, int value) {
-	if (ptr->back == ptr->size - 1)
-		ptr->back = -1;
-	ptr->array[++ptr->back] = value;
-	ptr->count++;
-}
-
-int queue_pop(queue *ptr) {
-	int res = ptr->array[ptr->front++];
-	if (ptr->front == ptr->size)
-		ptr->front = 0;
-	ptr->count--;
-	return res;
-}
-
-int queue_count(queue *ptr) {
-	return ptr->count;
-}
 
 m_tran *matrix_create(size_t maxNode) {
 	m_tran *p = malloc(sizeof *p);
@@ -156,17 +111,16 @@ size_t matrix_text_search(m_tran *p, FILE *text) {
 	while ((c = fgetc(text)) != EOF) {
 		if (c < ALPHA_BEGIN || c > ALPHA_END)
 			continue;
-		int rank = c - ALPHA_BEGIN;
+		c = c - ALPHA_BEGIN;
 		// Tant que le noeud actuel ne possède pas de suite compatible
 		// On remonte par les suffixes propres
-		while (p->matrix[actualNode][rank] == -1) {
+		while (p->matrix[actualNode][c] == -1) {
 			actualNode = p->suppl[actualNode];
 		}
-		actualNode = p->matrix[actualNode][rank];
+		actualNode = p->matrix[actualNode][c];
 		// On vérifie si une occurence n'a pas été trouvée
-		if (p->end[actualNode] == 1) {
+		if (p->end[actualNode] == 1)
 			wordCount++;
-		}
 	}
 	return wordCount;
 }

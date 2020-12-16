@@ -1,24 +1,24 @@
 PROGRAMS = genere-texte genere-mots ac-matrice ac-hachage
-
+SRCDIR = src/
 
 # Module genere-texte
-GTDIR = src/genere-texte/
+GTDIR = $(SRCDIR)genere-texte/
 GTOBJ = $(GTDIR)gt.o
 
 # Module genere-mots
-GMDIR = src/genere-mots/
+GMDIR = $(SRCDIR)genere-mots/
 GMOBJ = $(GMDIR)gm.o
 
 # Module aho-corasick matrice
-ACDIR = src/aho-corasick/
+ACDIR = $(SRCDIR)aho-corasick/
 ACOBJ = $(ACDIR)aho-corasick.o
-ACMOBJ = $(ACDIR)acm.o
-ACHOBJ = $(ACDIR)ach.o
+ACMOBJ = $(SRCDIR)utils.o $(ACDIR)acm.o
+ACHOBJ = $(SRCDIR)utils.o $(ACDIR)ach.o
 
 OBJECTS = $(GTOBJ) $(GMOBJ) $(ACMOBJ) $(ACHOBJ) $(ACOBJ)
 
 CC = gcc
-CFLAGS = -std=c11 -Wall -Wconversion -Werror -Wextra -Wpedantic -Isrc/ -I$(GTDIR) -I$(GMDIR) -I$(ACDIR)
+CFLAGS = -std=c11 -Wall -Wconversion -Werror -Wextra -Wpedantic -I$(SRCDIR) -I$(GTDIR) -I$(GMDIR) -I$(ACDIR)
 
 all: $(PROGRAMS)
 
