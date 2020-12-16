@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <time.h>
+#include <string.h>
 #include "../utils.h"
 #include "acm.h"
 #include "ach.h"
@@ -30,8 +31,9 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	// On calcule la longueur maximal d'un mot
+	// On calcule la longueur maximal d'un mot et le nombre d'état maximum possible
 	int c;
+	size_t maxNode = 0;
 	size_t maxLength = 0;
 	size_t length = 0;
 	while ((c = fgetc(words_file)) != EOF) {
@@ -41,12 +43,14 @@ int main(int argc, char **argv) {
 			length = 0;
 		}
 		length++;
+		maxNode++;
 	}
 	maxLength++; // Caractère de fin de chaîne.
+	maxNode++;   // On ajoute l'état initial
 
 	#if ACM == 1
 		// Création de la structure de la matrice de transitions
-		m_tran *matrix = matrix_create();
+		m_tran *matrix = matrix_create(maxNode);
 		if (matrix == NULL)
 			return EXIT_FAILURE;
 	#else
@@ -57,6 +61,11 @@ int main(int argc, char **argv) {
 	fseek(words_file, SEEK_SET, 0);
 	char word[maxLength];
 	while (fgets(word, (int) maxLength, words_file) != NULL) {
+		if (word[0] == '\n')
+			continue;
+		// On retire le caractère de retour à la ligne s'il existe
+		if (word[strlen(word) - 1] == '\n')
+			word[strlen(word) - 1] = '\0';
 		#if ACM == 1
 			if (matrix_insert(matrix, word))
 				return EXIT_FAILURE;
@@ -64,12 +73,17 @@ int main(int argc, char **argv) {
 			//TODO
 		#endif
 	}
+
 	// Construction des suppléants
+	fseek(words_file, SEEK_SET, 0);
+	size_t res;
 	#if ACM == 1
 		matrix_organize(matrix);
+		res = matrix_text_search(matrix, text_file);
 	#else
 	// TODO
 	#endif
-	printf("%d", matrix_text_search(matrix, text_file));
+
+	printf("%zu\n", res);
 	return EXIT_SUCCESS;
 }
