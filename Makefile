@@ -29,11 +29,11 @@ genere-mots: $(GMOBJ)
 	$(CC) $(GMOBJ) $(CFLAGS) -o genere-mots
 
 ac-matrice: $(ACMOBJ)
-	$(CC) $(CFLAGS) -c -o $(ACDIR)aho-corasick.o $(ACDIR)aho-corasick.c
+	$(CC) $(CFLAGS) -c -o $(ACDIR)aho-corasick.o $(ACDIR)aho-corasick.c -D ACM
 	$(CC) $(ACMOBJ) $(ACOBJ) $(CFLAGS) -o ac-matrice
 
 ac-hachage: $(ACHOBJ)
-	$(CC) $(CFLAGS) -c -o $(ACDIR)aho-corasick.o $(ACDIR)aho-corasick.c -D ACM 0
+	$(CC) $(CFLAGS) -c -o $(ACDIR)aho-corasick.o $(ACDIR)aho-corasick.c
 	$(CC) $(ACHOBJ) $(ACOBJ) $(CFLAGS) -o ac-hachage
 
 clean:

@@ -7,11 +7,7 @@
 #include "acm.h"
 #include "ach.h"
 
-// Macro modifié à la compilation, par défault à 1 pour éviter les
-// avertissements de l'IDE
-#define ACM 1
-#define ARG_COUNT      3
-
+#define ARG_COUNT 3
 
 // Ce programme implémente l'algorithme d'aho-corasick à l'aide d'une matrice
 // de transitions ou d'une table de hachage  On y donne deux arguments :
@@ -48,13 +44,17 @@ int main(int argc, char **argv) {
 	maxLength++; // Caractère de fin de chaîne.
 	maxNode++;   // On ajoute l'état initial
 
-	#if ACM == 1
+	#ifdef ACM
 		// Création de la structure de la matrice de transitions
 		m_tran *matrix = matrix_create(maxNode);
 		if (matrix == NULL)
 			return EXIT_FAILURE;
 	#else
-		//TODO
+		if (maxNode < MAX_ALPHA_SIZE + 1)
+			maxNode = MAX_ALPHA_SIZE + 1;
+		hashtable *h_table = hashtable_create(maxNode);
+		if (h_table == NULL)
+			return EXIT_FAILURE;
 	#endif
 
 	// On extrait les mots du fichier puis on les insère dans la matrice
@@ -66,22 +66,23 @@ int main(int argc, char **argv) {
 		// On retire le caractère de retour à la ligne s'il existe
 		if (word[strlen(word) - 1] == '\n')
 			word[strlen(word) - 1] = '\0';
-		#if ACM == 1
+		#ifdef ACM
 			if (matrix_insert(matrix, word))
 				return EXIT_FAILURE;
 		#else
-			//TODO
+			if (hashtable_insert(h_table, word))
+				return EXIT_FAILURE;
 		#endif
 	}
-
 	// Construction des suppléants
 	fseek(words_file, SEEK_SET, 0);
 	size_t res;
-	#if ACM == 1
+	#ifdef ACM
 		matrix_organize(matrix);
 		res = matrix_text_search(matrix, text_file);
 	#else
-	// TODO
+		hashtable_organize(h_table);
+		res = hashtable_text_search(h_table, text_file);
 	#endif
 
 	printf("%zu\n", res);
