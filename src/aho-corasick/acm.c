@@ -116,6 +116,8 @@ size_t matrix_text_search(m_tran *p, FILE *text) {
 		// On remonte par les suffixes propres
 		while (p->matrix[actualNode][c] == -1) {
 			actualNode = p->suppl[actualNode];
+			if (p->end[actualNode] == 1)
+				wordCount++;
 		}
 		actualNode = p->matrix[actualNode][c];
 		// On vérifie si une occurence n'a pas été trouvée
@@ -126,6 +128,10 @@ size_t matrix_text_search(m_tran *p, FILE *text) {
 }
 
 void matrix_debug(m_tran *p) {
+	printf("tableau end :\n");
+	for (size_t i = 0; i < p->maxNode; i++) {
+		printf("%d ", p->end[i]);
+	}
 	for (size_t i = 0; i < p->maxNode; ++i) {
 		for (size_t j = 0; j < MAX_ALPHA_SIZE; ++j) {
 			printf("%d ", p->matrix[i][j]);

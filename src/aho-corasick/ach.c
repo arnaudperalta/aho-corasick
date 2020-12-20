@@ -115,11 +115,14 @@ int hashtable_insert(hashtable *h, const char *word) {
 			h->nextNode++;
 		} else {
 			list *ptr = h->array[hash];
+			// On boucle sur la liste que l'on a trouvé dans la table de hachage
+			// Si l'élément n'est pas présent dans cette liste on l'ajoute en queue
 			while (ptr->value != c) {
 				// La lettre n'est pas dans la liste actuelle,
 				// on ajoute un maillon
 				if (ptr->next == NULL) {
 					list_insert(ptr, actualNode, h->nextNode, c);
+					h->nextNode++;
 				}
 				ptr = ptr->next;
 			}
@@ -127,9 +130,9 @@ int hashtable_insert(hashtable *h, const char *word) {
 			// si ce n'est pas une cellule qui bouclé sur l'état initial.
 			if (ptr->startNode == 0 && ptr->targetNode == 0) {
 				ptr->targetNode = h->nextNode;
+				h->nextNode++;
 			}
 			actualNode = ptr->targetNode;
-			h->nextNode++;
 		}
 	}
 	h->end[actualNode] = 1;
@@ -179,6 +182,8 @@ size_t hashtable_text_search(hashtable *h, FILE *text) {
 		c = c - ALPHA_BEGIN;
 		while (hashtable_get(h, actualNode, c) == -1) {
 			actualNode = h->suppl[actualNode];
+			if (h->end[actualNode] == 1)
+				wordCount++;
 		}
 		actualNode = hashtable_get(h, actualNode, c);
 		// On vérifie si une occurence d'un mot a été trouvée.
@@ -202,8 +207,7 @@ void hashtable_debug(hashtable *h) {
 	for (size_t i = 0; i < h->maxNode; ++i) {
 		list *ptr = h->array[i];
 		while (ptr != NULL) {
-			if (ptr->startNode == 0)
-				printf("start : %d target : %d value : %d         \n", ptr->startNode, ptr->targetNode, ptr->value);
+			printf("start : %d target : %d value : %d         \n", ptr->startNode, ptr->targetNode, ptr->value);
 			ptr = ptr->next;
 		}
 	}
