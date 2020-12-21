@@ -10,7 +10,8 @@
 #define ARG_COUNT 3
 
 // Ce programme implémente l'algorithme d'aho-corasick à l'aide d'une matrice
-// de transitions ou d'une table de hachage  On y donne deux arguments :
+// de transitions ou d'une table de hachage (selon la macro ACM). 
+// On y donne deux arguments :
 //	- Un fichier contenant les mots à rechercher.
 //	- Un fichier contenant le texte sur lequel les recherches seront réalisées.
 int main(int argc, char **argv) {

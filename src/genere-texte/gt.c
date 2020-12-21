@@ -7,9 +7,7 @@
 
 // Ce programme génère un texte aléatoire selon deux paramètres :
 //	- La taille du texte
-//	- La taille de l'alphabet, cet alphabet est basé
-//    sur l'alphabet classique sur les lettres minuscules.
-//    Par conséquent la taille maximal de celui-ci est de 26.
+//	- La taille de l'alphabet
 
 int main(int argc, char **argv) {
 	if (argc != ARG_COUNT) {
